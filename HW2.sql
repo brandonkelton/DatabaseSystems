@@ -70,29 +70,34 @@ VALUES
 
 --Select all countries bordering Germany
 SELECT
-    C.name as CountryName
+    C.name "CountryGermanBorder"
 FROM
     Borders B
 JOIN
-    Countries C ON B.country2Id=C.id
+    Countries C ON B.country2Id=C.countryId
 WHERE
     B.country1Id=1;
 
---Select all countries with population over 100m
+--Select all countries with population over 35M
 SELECT
-    C.name as CountryName, 
-    C.population as Population
+    C.name "CountryOver35M", 
+    C.population Population
+FROM
+    Countries C
 WHERE
-    C.population > 100000000;
+    C.population > 35000000;
 
---Select all countries with pop. > 100m and border Germany
+--Select all countries with pop. > 35M and border Germany
 SELECT
-    C.name as CountryName,
-    C.population as Population
+    C.name "CountryGermanBorderOver35M",
+    C.population Population
 FROM 
     Borders B
 JOIN
-    Countries C ON B.country2Id=C.id
+    Countries C ON B.country2Id=C.countryId
 WHERE
     B.country1Id=1
-    AND C.population > 100000000;
+    AND C.population > 35000000;
+
+DROP TABLE Borders;
+DROP TABLE Countries;
