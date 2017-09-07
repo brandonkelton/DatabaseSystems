@@ -66,7 +66,7 @@ VALUES
 (8, 9),
 (9, 7),
 (9, 8),
-(9, 1)
+(9, 1);
 
 --Select all countries bordering Germany
 SELECT
