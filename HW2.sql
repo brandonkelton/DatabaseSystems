@@ -19,7 +19,7 @@ CREATE TABLE Borders (
 
 --Insert Country Records
 INSERT INTO Countries
-(countryId, name, latitude, longitude, area, population,  gdp, gdpYear)
+(countryId, name, latitude, longitude, area, population, gdp, gdpYear)
 VALUES
 (1, 'Germany', 51, 9, 357022, 80594017, 48200, 2016),
 (2, 'Netherlands', 52, 5, 41543, 17084719, 50800, 2016),
