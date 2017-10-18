@@ -1,5 +1,5 @@
-# DatabaseSystems
-Class Assignments
+# Database Systems
+## Class Assignments
 
 Uploaded raw data into DB first, using the command below.  Then selected data out of the "raw" table into the normalized tables.
 
