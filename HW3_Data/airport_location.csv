@@ -1,0 +1,175 @@
+"location_id","wac","state_name","state_abr","state_fips","city_name","city_market_id"
+1,82,"Colorado","CO",8,"Denver",30325
+2,41,"Illinois","IL",17,"Rockford",34512
+3,74,"Texas","TX",48,"San Antonio",33214
+4,33,"Florida","FL",12,"Pensacola",33728
+5,74,"Texas","TX",48,"Austin",30423
+6,84,"Montana","MT",30,"Helena",32156
+7,72,"Louisiana","LA",22,"New Orleans",33495
+8,52,"Kentucky","KY",21,"Cincinnati",33105
+9,33,"Florida","FL",12,"Panama City",31481
+10,81,"Arizona","AZ",4,"Page",34081
+11,51,"Alabama","AL",1,"Huntsville",30255
+12,2,"Hawaii","HI",15,"Lihue",32982
+13,84,"Montana","MT",30,"Kalispell",31648
+14,91,"California","CA",6,"San Jose",32457
+15,43,"Michigan","MI",26,"Pontiac",34275
+16,65,"Nebraska","NE",31,"Scottsbluff",30558
+17,72,"Louisiana","LA",22,"Shreveport",30476
+18,53,"Mississippi","MS",28,"Gulfport/Biloxi",31973
+19,67,"South Dakota","SD",46,"Watertown",30409
+20,74,"Texas","TX",48,"Lubbock",32896
+21,91,"California","CA",6,"Oakland",32457
+22,54,"Tennessee","TN",47,"Nashville",30693
+23,65,"Nebraska","NE",31,"Lincoln",33029
+24,22,"New York","NY",36,"Rochester",34576
+25,36,"North Carolina","NC",37,"Charlotte",31057
+26,91,"California","CA",6,"Victorville",35570
+27,74,"Texas","TX",48,"Brownsville",30747
+28,67,"South Dakota","SD",46,"Rapid City",34457
+29,61,"Iowa","IA",19,"Cedar Rapids/Iowa City",31003
+30,41,"Illinois","IL",17,"Chicago",30977
+31,44,"Ohio","OH",39,"Columbus",31066
+32,23,"Pennsylvania","PA",42,"Philadelphia",34100
+33,22,"New York","NY",36,"Albany",30257
+34,62,"Kansas","KS",20,"Wichita",30928
+35,43,"Michigan","MI",26,"Detroit",31295
+36,38,"Virginia","VA",51,"Norfolk",33667
+37,81,"Arizona","AZ",4,"Bullhead City",30590
+38,84,"Montana","MT",30,"Great Falls",31895
+39,62,"Kansas","KS",20,"Dodge City",31283
+40,91,"California","CA",6,"Palm Springs",34262
+41,44,"Ohio","OH",39,"Dayton",31267
+42,91,"California","CA",6,"Ontario",32575
+43,74,"Texas","TX",48,"Amarillo",30279
+44,88,"Wyoming","WY",56,"Cody",31097
+45,86,"New Mexico","NM",35,"Farmington",31711
+46,74,"Texas","TX",48,"Midland/Odessa",33158
+47,85,"Nevada","NV",32,"Reno",34570
+48,86,"New Mexico","NM",35,"Santa Fe",34674
+49,33,"Florida","FL",12,"Orlando",31454
+50,82,"Colorado","CO",8,"Hayden",34699
+51,82,"Colorado","CO",8,"Cortez",30950
+52,45,"Wisconsin","WI",55,"Milwaukee",33342
+53,82,"Colorado","CO",8,"Durango",30285
+54,42,"Indiana","IN",18,"Indianapolis",32337
+55,44,"Ohio","OH",39,"Cleveland",30647
+56,65,"Nebraska","NE",31,"Chadron",30925
+57,33,"Florida","FL",12,"Fort Lauderdale",32467
+58,66,"North Dakota","ND",38,"Williston",32389
+59,34,"Georgia","GA",13,"Atlanta",30397
+60,82,"Colorado","CO",8,"Eagle",31503
+61,64,"Missouri","MO",29,"Branson",30643
+62,92,"Oregon","OR",41,"Medford",33264
+63,38,"Virginia","VA",51,"Washington",30852
+64,83,"Idaho","ID",16,"Idaho Falls",32280
+65,52,"Kentucky","KY",21,"Louisville",33044
+66,91,"California","CA",6,"San Francisco",32457
+67,88,"Wyoming","WY",56,"Riverton/Lander",34534
+68,11,"Connecticut","CT",9,"Hartford",30529
+69,91,"California","CA",6,"San Diego",33570
+70,2,"Hawaii","HI",15,"Kahului",33830
+71,21,"New Jersey","NJ",34,"Newark",31703
+72,64,"Missouri","MO",29,"St. Louis",31123
+73,64,"Missouri","MO",29,"Kansas City",33198
+74,62,"Kansas","KS",20,"Salina",34877
+75,91,"California","CA",6,"Burbank",32575
+76,54,"Tennessee","TN",47,"Memphis",33244
+77,82,"Colorado","CO",8,"Montrose/Delta",33502
+78,38,"Virginia","VA",51,"Richmond",34524
+79,1,"Alaska","AK",2,"Anchorage",30299
+80,74,"Texas","TX",48,"El Paso",30615
+81,82,"Colorado","CO",8,"Pueblo",34288
+82,91,"California","CA",6,"Fresno",31638
+83,81,"Arizona","AZ",4,"Tucson",30436
+84,82,"Colorado","CO",8,"Alamosa",30272
+85,91,"California","CA",6,"Santa Barbara",34689
+86,65,"Nebraska","NE",31,"North Platte",32899
+87,33,"Florida","FL",12,"Tampa",33195
+88,54,"Tennessee","TN",47,"Knoxville",35412
+89,92,"Oregon","OR",41,"North Bend/Coos Bay",33964
+90,71,"Arkansas","AR",5,"Fayetteville",31834
+91,92,"Oregon","OR",41,"Bend/Redmond",34489
+92,61,"Iowa","IA",19,"Des Moines",31423
+93,2,"Hawaii","HI",15,"Kona",32758
+94,73,"Oklahoma","OK",40,"Oklahoma City",33851
+95,87,"Utah","UT",49,"Wendover",31563
+96,66,"North Dakota","ND",38,"Devils Lake",31447
+97,22,"New York","NY",36,"New York",31703
+98,74,"Texas","TX",48,"Houston",31453
+99,91,"California","CA",6,"Sacramento",33192
+100,64,"Missouri","MO",29,"Springfield",34783
+101,84,"Montana","MT",30,"Missoula",33486
+102,82,"Colorado","CO",8,"Gunnison",32012
+103,33,"Florida","FL",12,"Miami",32467
+104,43,"Michigan","MI",26,"Grand Rapids",31986
+105,23,"Pennsylvania","PA",42,"Pittsburgh",30198
+106,93,"Washington","WA",53,"Seattle",30559
+107,83,"Idaho","ID",16,"Sun Valley/Hailey/Ketchum",35041
+108,88,"Wyoming","WY",56,"Jackson",32441
+109,82,"Colorado","CO",8,"Aspen",30372
+110,33,"Florida","FL",12,"Jacksonville",31136
+111,35,"Maryland","MD",24,"Baltimore",30852
+112,93,"Washington","WA",53,"Spokane",31884
+113,66,"North Dakota","ND",38,"Bismarck/Mandan",30627
+114,74,"Texas","TX",48,"Corpus Christi",31140
+115,22,"New York","NY",36,"Buffalo",30792
+116,88,"Wyoming","WY",56,"Rock Springs",34543
+117,84,"Montana","MT",30,"Billings",30620
+118,36,"North Carolina","NC",37,"Raleigh/Durham",34492
+119,33,"Florida","FL",12,"Fort Myers",31714
+120,45,"Wisconsin","WI",55,"Madison",33485
+121,85,"Nevada","NV",32,"Las Vegas",32211
+122,65,"Nebraska","NE",31,"Omaha",33316
+123,62,"Kansas","KS",20,"Hays",32255
+124,73,"Oklahoma","OK",40,"Tulsa",34653
+125,51,"Alabama","AL",1,"Birmingham",30599
+126,53,"Mississippi","MS",28,"Jackson/Vicksburg",32448
+127,74,"Texas","TX",48,"Dallas",30194
+128,91,"California","CA",6,"Santa Ana",32575
+129,37,"South Carolina","SC",45,"Greer",31871
+130,84,"Montana","MT",30,"Bozeman",30849
+131,66,"North Dakota","ND",38,"Minot",33304
+132,74,"Texas","TX",48,"Dallas/Fort Worth",30194
+133,63,"Minnesota","MN",27,"Minneapolis",31650
+134,87,"Utah","UT",49,"Salt Lake City",34614
+135,36,"North Carolina","NC",37,"Greensboro/High Point",31995
+136,87,"Utah","UT",49,"St. George",34794
+137,87,"Utah","UT",49,"Moab",31092
+138,65,"Nebraska","NE",31,"Alliance",30221
+139,66,"North Dakota","ND",38,"Dickinson",31315
+140,82,"Colorado","CO",8,"Telluride",35177
+141,67,"South Dakota","SD",46,"Pierre",34120
+142,87,"Utah","UT",49,"Vernal",35582
+143,82,"Colorado","CO",8,"Grand Junction",31921
+144,51,"Alabama","AL",1,"Gadsden",31840
+145,74,"Texas","TX",48,"Sugar Land",34792
+146,65,"Nebraska","NE",31,"McCook",33200
+147,82,"Colorado","CO",8,"Colorado Springs",30189
+148,81,"Arizona","AZ",4,"Phoenix",30466
+149,37,"South Carolina","SC",45,"Charleston",30994
+150,92,"Oregon","OR",41,"Portland",34057
+151,91,"California","CA",6,"Long Beach",32575
+152,82,"Colorado","CO",8,"Fort Collins/Loveland",31719
+153,67,"South Dakota","SD",46,"Sioux Falls",31775
+154,73,"Oklahoma","OK",40,"Lawton/Fort Sill",32891
+155,91,"California","CA",6,"Bakersfield",30561
+156,91,"California","CA",6,"San Luis Obispo",34236
+157,88,"Wyoming","WY",56,"Laramie",32888
+158,13,"Massachusetts","MA",25,"Boston",30721
+159,36,"North Carolina","NC",37,"CONCORD",32544
+160,66,"North Dakota","ND",38,"Fargo",31637
+161,71,"Arkansas","AR",5,"Little Rock",32600
+162,83,"Idaho","ID",16,"Boise",30713
+163,93,"Washington","WA",53,"Pasco/Kennewick/Richland",34252
+164,2,"Hawaii","HI",15,"Honolulu",32134
+165,41,"Illinois","IL",17,"Moline",33367
+166,88,"Wyoming","WY",56,"Casper",31122
+167,88,"Wyoming","WY",56,"Gillette",31865
+168,86,"New Mexico","NM",35,"Albuquerque",30140
+169,92,"Oregon","OR",41,"Eugene",31603
+170,66,"North Dakota","ND",38,"Jamestown",32519
+171,62,"Kansas","KS",20,"Liberal",32902
+172,65,"Nebraska","NE",31,"Kearney",31468
+173,91,"California","CA",6,"Los Angeles",32575
+174,88,"Wyoming","WY",56,"Cheyenne",31233
