@@ -75,12 +75,22 @@ select distinct airport_id::int, airport_seq_id::int, airport_code, location_id 
     	public."rawAirlineData" r
 ) airports;
 
---INSERT: airport_departures
-insert into airport_departures (airport_id, scheduled, performed)
-select airports.airport_id::int, coalesce(sum(r.departures_scheduled::int), 0)::int as scheduled, coalesce(sum(r.departures_performed::int), 0)::int as performed
-from (select origin_airport_id as airport_id from public."rawAirlineData" union select dest_airport_id as airport_id from public."rawAirlineData") airports
-left join public."rawAirlineData" r on airports.airport_id = r.origin_airport_id
-group by airports.airport_id;
+--INSERT: airline_airport_departures
+insert into airline_airport_departures
+(
+	airport_id,
+    airline_id,
+    scheduled,
+    performed
+)
+select
+	origin_airport_id::int,
+    airline_id::int,
+    coalesce(sum(departures_scheduled::int), 0),
+    coalesce(sum(departures_performed::int), 0)
+from
+	public."rawAirlineData"
+group by origin_airport_id, airline_id
 
 --INSERT: ramp_distance
 insert into ramp_distance (select distinct ramp_to_ramp::int from public."rawAirlineData");

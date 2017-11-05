@@ -56,17 +56,22 @@ CREATE TABLE airport
         ON DELETE RESTRICT
 );
 
-CREATE TABLE airport_departures
+CREATE TABLE public.airline_airport_departures
 (
     airport_id integer NOT NULL,
+    airline_id integer NOT NULL,
     scheduled integer NOT NULL DEFAULT 0,
     performed integer NOT NULL DEFAULT 0,
-    CONSTRAINT airport_departures_pkey PRIMARY KEY (airport_id),
+    CONSTRAINT airline_airport_departures_pkey PRIMARY KEY (airport_id, airline_id),
     CONSTRAINT fk_airport_departures_airport_id FOREIGN KEY (airport_id)
         REFERENCES public.airport (airport_id) 
         ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+    CONSTRAINT fk_airport_departures_airline_id FOREIGN KEY (airline_id)
+        REFERENCES public.airline (airline_id) 
+        ON UPDATE CASCADE
         ON DELETE RESTRICT
-);
+)
 
 CREATE TABLE airport_location
 (
