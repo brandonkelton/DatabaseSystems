@@ -1,33 +1,83 @@
-"city_name","state_name","airport_code","carrier_name","passengers"
-"Denver","Colorado","APA","Jet Aviation Flight Services, Inc.","2"
-"Denver","Colorado","APA","Peninsula Airways Inc.","5"
-"Denver","Colorado","DEN","Aerodynamics Inc. d/b/a SkyValue d/b/a SkyValue Airways","2182"
-"Denver","Colorado","DEN","Alaska Airlines Inc.","26216"
-"Denver","Colorado","DEN","Allegiant Air","1776"
-"Denver","Colorado","DEN","American Airlines Inc.","151190"
-"Denver","Colorado","DEN","Ameristar Air Cargo","0"
-"Denver","Colorado","DEN","Boutique Air","2565"
-"Denver","Colorado","DEN","CFM Inc d/b/a Contour Airlines","14"
-"Denver","Colorado","DEN","Delta Air Lines Inc.","122783"
-"Denver","Colorado","DEN","Endeavor Air Inc.","139"
-"Denver","Colorado","DEN","ExpressJet Airlines Inc.","47"
-"Denver","Colorado","DEN","Federal Express Corporation","0"
-"Denver","Colorado","DEN","Frontier Airlines Inc.","331181"
-"Denver","Colorado","DEN","GoJet Airlines LLC d/b/a United Express","47578"
-"Denver","Colorado","DEN","Great Lakes Airlines","1852"
-"Denver","Colorado","DEN","JetBlue Airways","14821"
-"Denver","Colorado","DEN","Kalitta Charters II","0"
-"Denver","Colorado","DEN","Omni Air International LLC","0"
-"Denver","Colorado","DEN","Peninsula Airways Inc.","1706"
-"Denver","Colorado","DEN","Republic Airlines","26284"
-"Denver","Colorado","DEN","SkyWest Airlines Inc.","188397"
-"Denver","Colorado","DEN","Southern Air Inc.","0"
-"Denver","Colorado","DEN","Southwest Airlines Co.","816902"
-"Denver","Colorado","DEN","Spirit Air Lines","54766"
-"Denver","Colorado","DEN","Sun Country Airlines d/b/a MN Airlines","3652"
-"Denver","Colorado","DEN","Swift Air, LLC","66"
-"Denver","Colorado","DEN","Trans States Airlines","46617"
-"Denver","Colorado","DEN","United Air Lines Inc.","783096"
-"Denver","Colorado","DEN","United Parcel Service","0"
-"Denver","Colorado","DEN","Via Airlines d/b/a Charter Air Transport","344"
-"Denver","Colorado","DEN","Virgin America","10043"
+city_name,state_name,airport_code,carrier_name,passengers
+Denver,Colorado,DEN,Republic Airlines,26284
+Denver,Colorado,DEN,Alaska Airlines Inc.,26216
+Durango,Colorado,DRO,Mesa Airlines Inc.,5087
+Denver,Colorado,DEN,Federal Express Corporation,0
+Denver,Colorado,DEN,Spirit Air Lines,54766
+Denver,Colorado,DEN,Endeavor Air Inc.,139
+Aspen,Colorado,ASE,Avjet Corporation,3
+Denver,Colorado,DEN,JetBlue Airways,14821
+Alamosa,Colorado,ALS,Boutique Air,623
+Colorado Springs,Colorado,COS,Miami Air International,0
+Durango,Colorado,DRO,Federal Express Corporation,0
+Pueblo,Colorado,PUB,Sun Country Airlines d/b/a MN Airlines,154
+Denver,Colorado,DEN,"Swift Air, LLC",66
+Hayden,Colorado,HDN,Trans States Airlines,344
+Denver,Colorado,DEN,Peninsula Airways Inc.,1706
+Hayden,Colorado,HDN,GoJet Airlines LLC d/b/a United Express,1184
+Denver,Colorado,DEN,Delta Air Lines Inc.,122783
+Pueblo,Colorado,PUB,Great Lakes Airlines,236
+Denver,Colorado,DEN,Frontier Airlines Inc.,331181
+Eagle,Colorado,EGE,GoJet Airlines LLC d/b/a United Express,1074
+Grand Junction,Colorado,GJT,Trans States Airlines,2600
+Colorado Springs,Colorado,COS,ExpressJet Airlines Inc.,2167
+Cortez,Colorado,CEZ,Boutique Air,772
+Denver,Colorado,DEN,Virgin America,10043
+Denver,Colorado,DEN,Via Airlines d/b/a Charter Air Transport,344
+Colorado Springs,Colorado,COS,American Airlines Inc.,14662
+Montrose/Delta,Colorado,MTJ,Mesa Airlines Inc.,2813
+Colorado Springs,Colorado,COS,SkyWest Airlines Inc.,23136
+Denver,Colorado,DEN,Allegiant Air,1776
+Denver,Colorado,APA,Peninsula Airways Inc.,5
+Denver,Colorado,DEN,Aerodynamics Inc. d/b/a SkyValue d/b/a SkyValue Airways,2182
+Durango,Colorado,DRO,Empire Airlines Inc.,0
+Colorado Springs,Colorado,COS,Trans States Airlines,801
+Denver,Colorado,DEN,Omni Air International LLC,0
+Fort Collins/Loveland,Colorado,FNL,Sun Country Airlines d/b/a MN Airlines,149
+Montrose/Delta,Colorado,MTJ,Envoy Air,194
+Gunnison,Colorado,GUC,Trans States Airlines,245
+Eagle,Colorado,EGE,American Airlines Inc.,2489
+Grand Junction,Colorado,GJT,SkyWest Airlines Inc.,9970
+Denver,Colorado,DEN,Southwest Airlines Co.,816902
+Colorado Springs,Colorado,COS,Frontier Airlines Inc.,15847
+Grand Junction,Colorado,GJT,Compass Airlines,126
+Durango,Colorado,DRO,Trans States Airlines,47
+Denver,Colorado,DEN,ExpressJet Airlines Inc.,47
+Durango,Colorado,DRO,GoJet Airlines LLC d/b/a United Express,6090
+Eagle,Colorado,EGE,Aerodynamics Inc. d/b/a SkyValue d/b/a SkyValue Airways,22
+Denver,Colorado,DEN,American Airlines Inc.,151190
+Colorado Springs,Colorado,COS,Allegiant Air,2681
+Denver,Colorado,DEN,SkyWest Airlines Inc.,188397
+Hayden,Colorado,HDN,Federal Express Corporation,0
+Denver,Colorado,DEN,GoJet Airlines LLC d/b/a United Express,47578
+Denver,Colorado,DEN,Trans States Airlines,46617
+Eagle,Colorado,EGE,Avjet Corporation,3
+Colorado Springs,Colorado,COS,Horizon Air,1004
+Denver,Colorado,DEN,Sun Country Airlines d/b/a MN Airlines,3652
+Durango,Colorado,DRO,SkyWest Airlines Inc.,5672
+Colorado Springs,Colorado,COS,Southwest Airlines Co.,401
+Denver,Colorado,DEN,United Air Lines Inc.,783096
+Denver,Colorado,DEN,Great Lakes Airlines,1852
+Denver,Colorado,DEN,Kalitta Charters II,0
+Grand Junction,Colorado,GJT,Allegiant Air,2301
+Denver,Colorado,APA,"Jet Aviation Flight Services, Inc.",2
+Montrose/Delta,Colorado,MTJ,Sun Country Airlines d/b/a MN Airlines,93
+Colorado Springs,Colorado,COS,Republic Airlines,3928
+Colorado Springs,Colorado,COS,Alaska Airlines Inc.,156
+Denver,Colorado,DEN,Southern Air Inc.,0
+Colorado Springs,Colorado,COS,Federal Express Corporation,0
+Denver,Colorado,DEN,CFM Inc d/b/a Contour Airlines,14
+Telluride,Colorado,TEX,Great Lakes Airlines,11
+Grand Junction,Colorado,GJT,"Swift Air, LLC",138
+Aspen,Colorado,ASE,SkyWest Airlines Inc.,15855
+Montrose/Delta,Colorado,MTJ,GoJet Airlines LLC d/b/a United Express,3280
+Montrose/Delta,Colorado,MTJ,Trans States Airlines,880
+Pueblo,Colorado,PUB,USA Jet Airlines Inc.,0
+Denver,Colorado,DEN,United Parcel Service,0
+Grand Junction,Colorado,GJT,Federal Express Corporation,0
+Grand Junction,Colorado,GJT,Envoy Air,5171
+Denver,Colorado,DEN,Boutique Air,2565
+Montrose/Delta,Colorado,MTJ,SkyWest Airlines Inc.,140
+Denver,Colorado,DEN,Ameristar Air Cargo,0
+Colorado Springs,Colorado,COS,Delta Air Lines Inc.,4454
+Montrose/Delta,Colorado,MTJ,ExpressJet Airlines Inc.,916
