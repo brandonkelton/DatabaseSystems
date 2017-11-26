@@ -85,20 +85,11 @@ create table AirReserve.booking_flight_instance
     primary key (booking_id, flight_instance_id)
 );
 
-create table AirReserve.passenger
-(
-	passenger_id uuid not null primary key default(uuid_generate_v1()),
-    first_name varchar(50),
-    middle_name varchar(50),
-    last_name varchar(50)
-);
-
 create table AirReserve.booking_passenger
 (
 	booking_id uuid not null references AirReserve.booking (booking_id),
-    passenger_id uuid not null references AirReserve.passenger (passenger_id),
     first_name varchar(50),
     middle_name varchar(50),
     last_name varchar(50),
-    primary key (booking_id, passenger_id)
+    primary key (booking_id, first_name, middle_name, last_name)
 );
