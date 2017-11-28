@@ -6,8 +6,14 @@
 package airreserve.database;
 
 import airreserve.helpers.StringHelpers;
+import airreserve.models.Airline;
+import airreserve.models.Booking;
+import airreserve.models.City;
 import airreserve.models.Customer;
 import airreserve.models.Email;
+import airreserve.models.Flight;
+import airreserve.models.FlightInstance;
+import airreserve.models.Passenger;
 import airreserve.models.Phone;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -68,6 +74,141 @@ public class AirReserveConnection {
         
     }
     
+    public List<City> getCities() {
+        
+        List<City> cities = new ArrayList<City>();
+        
+        try {
+            
+            String query = "select " + String.join(", ", City.getFieldNames()) + " " +
+                    "from airreserve.city " +
+                    "order by city";
+                     
+            Connection conn = DriverManager.getConnection(_url, _props);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            
+            while (rs.next()) {
+                City city = buildCity(rs);
+                cities.add(city);
+            }
+            
+            rs.close();
+            stmt.close();
+            conn.close();
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return cities;
+    }
+    
+    public List<FlightInstance> getFlightInstances(String originCity, String destCity) {
+        
+        List<FlightInstance> flights = new ArrayList<FlightInstance>();
+        
+        try {
+            
+            String query = 
+                "select fi.flight_instance_id, fi.airline_code, fi.flight_number, fi.departure_date, fi.departure_hour, " + 
+                "fi.departure_minute, fi.arrival_date, fi.arrival_hour, fi.arrival_minute " +
+                "from airreserve.flight_instance fi " +
+                "left join airreserve.flight f on fi.flight_number=f.flight_number " +
+                "left join airreserve.city origin_city on f.origin_city_code=origin_city.city_code " +
+                "left join airreserve.city dest_city on f.dest_city_code=dest_city.city_code " +
+                "where origin_city.city=? and dest_city.city=? " +
+                "order by fi.departure_date, fi.departure_hour, fi.departure_minute, " + 
+                "fi.arrival_date, fi.arrival_hour, fi.arrival_minute";
+                     
+            Connection conn = DriverManager.getConnection(_url, _props);
+            PreparedStatement stmt = conn.prepareStatement(query);
+            
+            stmt.setString(1, originCity);
+            stmt.setString(2, destCity);
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {
+                FlightInstance flight = buildFlightInstance(rs);
+                flights.add(flight);
+            }
+            
+            rs.close();
+            stmt.close();
+            conn.close();
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return flights;
+    }
+    
+    public FlightInstance getFlightInstanceByBookingId(UUID bookingId) {
+        
+        FlightInstance flightInstance = null;
+        
+        try {
+            Connection conn = DriverManager.getConnection(_url, _props);
+            Statement stmt = conn.createStatement();
+            
+            String query = 
+                    "select " + 
+                        "fi.flight_instance_id, " +
+                        "fi.airline_code, " +
+                        "fi.flight_number, " +
+                        "fi.departure_date, " +
+                        "fi.departure_hour, " +
+                        "fi.departure_minute, " +
+                        "fi.arrival_date, " +
+                        "fi.arrival_hour, " +
+                        "fi.arrival_minute " +
+                    "from airreserve.flight_instance fi " +
+                    "join airreserve.booking_flight_instance bfi on fi.flight_instance_id=bfi.flight_instance_id " +
+                    "where bfi.booking_id='" + bookingId.toString() + "'";
+            ResultSet rs = stmt.executeQuery(query);
+            rs.next();
+            flightInstance = buildFlightInstance(rs);
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return flightInstance == null ? new FlightInstance() : flightInstance;       
+    }
+    
+    public List<Passenger> getPassengersByBookingId(UUID bookingId) {
+        
+        List<Passenger> passengers = new ArrayList<Passenger>();
+        
+        try {
+            Connection conn = DriverManager.getConnection(_url, _props);
+            Statement stmt = conn.createStatement();
+            
+            String query = 
+                    "select " + String.join(", ", Passenger.getFieldNames()) + " " +
+                    "from airreserve.booking_passenger " +
+                    "where booking_id='" + bookingId.toString() + "'";
+            ResultSet rs = stmt.executeQuery(query);
+                        
+            while (rs.next()) {
+                Passenger passenger = buildPassenger(rs);
+                passengers.add(passenger);
+            }
+            
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return passengers;
+    }
+    
     public Customer getCustomerById(UUID id) {
         
         Customer customer = null;
@@ -75,7 +216,7 @@ public class AirReserveConnection {
         try {
             Connection conn = DriverManager.getConnection(_url, _props);
             Statement stmt = conn.createStatement();
-            //List<String> conditions = getConditions(customer);
+            
             String query = 
                     "select " + String.join(", ", Customer.getFieldNames()) + " " +
                     "from airreserve.customer " +
@@ -100,7 +241,7 @@ public class AirReserveConnection {
         try {
             Connection conn = DriverManager.getConnection(_url, _props);
             Statement stmt = conn.createStatement();
-            //List<String> conditions = getConditions(customer);
+            
             String query = 
                     "select " + String.join(", ", Phone.getFieldNames()) + " " +
                     "from airreserve.customer_phone " +
@@ -130,7 +271,7 @@ public class AirReserveConnection {
         try {
             Connection conn = DriverManager.getConnection(_url, _props);
             Statement stmt = conn.createStatement();
-            //List<String> conditions = getConditions(customer);
+            
             String query = 
                     "select " + String.join(", ", Email.getFieldNames()) + " " +
                     "from airreserve.customer_email " +
@@ -152,11 +293,258 @@ public class AirReserveConnection {
         return emails;
     }
     
+    public List<Booking> getCustomerBookingsById(UUID id) {
+        
+        List<Booking> bookings = new ArrayList<Booking>();
+        
+        try {
+            Connection conn = DriverManager.getConnection(_url, _props);
+            Statement stmt = conn.createStatement();
+            
+            String query = 
+                    "select " + String.join(", ", Booking.getFieldNames()) + " " +
+                    "from airreserve.booking " +
+                    "where customer_id='" + id.toString() + "'";
+            ResultSet rs = stmt.executeQuery(query);
+            
+            while (rs.next()) {
+                Booking booking = buildBooking(rs);
+                bookings.add(booking);
+            }
+            
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return bookings;
+    }
+    
+    public Booking getBookingById(UUID bookingId) {
+        
+        Booking booking = null;
+        
+        try {
+            Connection conn = DriverManager.getConnection(_url, _props);
+            Statement stmt = conn.createStatement();
+            
+            String query = 
+                    "select " + String.join(", ", Booking.getFieldNames()) + " " +
+                    "from airreserve.booking " +
+                    "where booking_id='" + bookingId.toString() + "'";
+            
+            ResultSet rs = stmt.executeQuery(query);
+            rs.next();
+            booking = buildBooking(rs);
+            
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return booking == null ? new Booking() : booking;
+    }
+    
+    public List<Booking> getBookingsByCustomerId(UUID customerId) {
+        
+        List<Booking> bookings = new ArrayList<Booking>();
+        
+        try {
+            Connection conn = DriverManager.getConnection(_url, _props);
+            Statement stmt = conn.createStatement();
+            
+            String query = 
+                    "select " + String.join(", ", Booking.getFieldNames()) + " " +
+                    "from airreserve.booking " +
+                    "where customer_id='" + customerId.toString() + "'";
+            
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                Booking booking = buildBooking(rs);
+                bookings.add(booking);
+            }
+            
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return bookings;
+    }
+    
+    public City getCityFromCityCode(String cityCode) {
+        
+        City city = null;
+        
+        try {
+            Connection conn = DriverManager.getConnection(_url, _props);
+            Statement stmt = conn.createStatement();
+            
+            String query = 
+                    "select " + String.join(", ", City.getFieldNames()) + " " +
+                    "from airreserve.city " +
+                    "where city_code='" + cityCode + "'";
+            
+            ResultSet rs = stmt.executeQuery(query);
+            rs.next();
+            city = buildCity(rs);
+            
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return city == null ? new City() : city;
+    }
+    
+    public City getCityFromCityName(String cityName) {
+        
+        City city = null;
+        
+        try {
+            Connection conn = DriverManager.getConnection(_url, _props);
+            Statement stmt = conn.createStatement();
+            
+            String query = 
+                    "select " + String.join(", ", City.getFieldNames()) + " " +
+                    "from airreserve.city " +
+                    "where city='" + cityName + "'";
+            
+            ResultSet rs = stmt.executeQuery(query);
+            rs.next();
+            city = buildCity(rs);
+            
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return city == null ? new City() : city;
+    }
+    
+    public Flight getFlightByFlightNumber(String flightNumber) {
+        
+        Flight flight = null;
+        
+        try {
+            Connection conn = DriverManager.getConnection(_url, _props);
+            Statement stmt = conn.createStatement();
+            
+            String query = 
+                    "select " + String.join(", ", Flight.getFieldNames()) + " " +
+                    "from airreserve.flight " +
+                    "where flight_number='" + flightNumber + "'";
+            
+            ResultSet rs = stmt.executeQuery(query);
+            rs.next();
+            flight = buildFlight(rs);
+            
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return flight == null ? new Flight() : flight;
+    }
+    
+    public Airline getAirlineByAirlineName(String name) {
+        
+        Airline airline = null;
+        
+        try {
+            Connection conn = DriverManager.getConnection(_url, _props);
+            Statement stmt = conn.createStatement();
+            
+            String query = 
+                    "select " + String.join(", ", Airline.getFieldNames()) + " " +
+                    "from airreserve.airline " +
+                    "where airline_name='" + name + "'";
+            
+            ResultSet rs = stmt.executeQuery(query);
+            rs.next();
+            airline = buildAirline(rs);
+            
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return airline == null ? new Airline() : airline;
+    }
+    
+    public Airline getAirlineByAirlineCode(String code) {
+        
+        Airline airline = null;
+        
+        try {
+            Connection conn = DriverManager.getConnection(_url, _props);
+            Statement stmt = conn.createStatement();
+            
+            String query = 
+                    "select " + String.join(", ", Airline.getFieldNames()) + " " +
+                    "from airreserve.airline " +
+                    "where airline_code='" + code + "'";
+            
+            ResultSet rs = stmt.executeQuery(query);
+            rs.next();
+            airline = buildAirline(rs);
+            
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return airline == null ? new Airline() : airline;
+    }
+    
+    public FlightInstance getFlightInstanceByAirlineCodeFlightNumber(String airlineCode, String flightNumber) {
+    
+        FlightInstance flight = null;
+
+        try {
+            Connection conn = DriverManager.getConnection(_url, _props);
+            Statement stmt = conn.createStatement();
+            
+            String query = 
+                    "select " + String.join(", ", FlightInstance.getFieldNames()) + " " +
+                    "from airreserve.flight_instance " +
+                    "where airline_code='" + airlineCode + "' and " +
+                    "flight_number='" + flightNumber + "'";
+            
+            ResultSet rs = stmt.executeQuery(query);
+            rs.next();
+            flight = buildFlightInstance(rs);
+            
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return flight == null ? new FlightInstance() : flight;
+    }
+    
     public UUID createCustomer(Customer customer) {
 
         try {
             
-            //Statement stmt = conn.createStatement();
             String query = 
                     "insert into airreserve.customer " + 
                     "(first_name, last_name, street, city, state_province, postal_code, country) " +
@@ -200,6 +588,51 @@ public class AirReserveConnection {
         saveEmails(customer);
         
         return customer.getCustomerId();
+    }
+    
+    public UUID createBooking(Booking booking, UUID customerId) {
+        
+        try {
+            
+            String query = 
+                    "insert into airreserve.booking " + 
+                    "(customer_id, city_code, booking_date) " +
+                    "values (?,?,?);";
+            String returnId[] = { "booking_id" };
+            Connection conn = DriverManager.getConnection(_url, _props);
+            PreparedStatement stmt = conn.prepareStatement(query, returnId);
+            
+            stmt.setObject(1, customerId);
+            stmt.setString(2, booking.getCityCode());
+            stmt.setTimestamp(3, booking.getBookingDate());
+            
+            int affectedRows = stmt.executeUpdate();
+            
+            if (affectedRows == 0) {
+                throw new SQLException("Creating booking failed. No rows affected.");
+            }
+            
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    booking.setBookingId((UUID)generatedKeys.getObject(1));
+                }
+                else {
+                    throw new SQLException("Creating booking failed. No ID obtained.");
+                }
+            }
+            finally {
+                stmt.close();
+                conn.close();
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        saveFlightInstance(booking);
+        savePassengers(booking);
+        
+        return booking.getBookingId();        
     }
     
     public void deleteCustomer(Customer customer) {
@@ -257,6 +690,129 @@ public class AirReserveConnection {
         
         savePhones(customer);
         saveEmails(customer);
+    }
+    
+    public void updateBooking(Booking booking) {
+        
+        try {
+            
+            String query = 
+                    "update airreserve.booking " +
+                    "set " +
+                    "city_code=?, " +
+                    "booking_date=? " +
+                    "where booking_id=?";
+            
+            Connection conn = DriverManager.getConnection(_url, _props);
+            PreparedStatement stmt = conn.prepareStatement(query);
+            
+            stmt.setString(1, booking.getCityCode());
+            stmt.setTimestamp(2, booking.getBookingDate());
+                        
+            stmt.executeUpdate();
+            stmt.close();
+            conn.close();
+        }
+        catch (Exception ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        saveFlightInstance(booking);
+        savePassengers(booking);
+    }
+    
+    private void saveFlightInstance(Booking booking) {
+        
+        try {
+            
+            String deleteQuery = 
+                    "delete from airreserve.booking_flight_instance " +
+                    "where booking_id=?";
+            
+            Connection conn = DriverManager.getConnection(_url, _props);
+            PreparedStatement deleteStmt = conn.prepareStatement(deleteQuery);
+            
+            deleteStmt.setObject(1, booking.getBookingId());
+            
+            deleteStmt.executeUpdate();
+            deleteStmt.close();
+            conn.close();
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        try {
+                                    
+            String query = 
+                    "insert into airreserve.booking_flight_instance " +
+                    "(booking_id, flight_instance_id) " +
+                    "values (?,?)";
+            
+            Connection conn = DriverManager.getConnection(_url, _props);
+            PreparedStatement insertStmt = conn.prepareStatement(query);
+            
+            insertStmt.setObject(1, booking.getBookingId());
+            insertStmt.setObject(2, booking.getFlightInstance().getFlightInstanceId());
+
+            insertStmt.executeUpdate();
+            
+            insertStmt.close();
+            conn.close();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+                
+    }
+    
+    private void savePassengers(Booking booking) {
+        
+        try {
+            
+            String deleteQuery = 
+                    "delete from airreserve.booking_passenger " +
+                    "where booking_id=?";
+            
+            Connection conn = DriverManager.getConnection(_url, _props);
+            PreparedStatement deleteStmt = conn.prepareStatement(deleteQuery);
+            
+            deleteStmt.setObject(1, booking.getBookingId());
+            
+            deleteStmt.executeUpdate();
+            deleteStmt.close();
+            conn.close();
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        try {
+                                    
+            String query = 
+                    "insert into airreserve.booking_passenger " +
+                    "(booking_id, first_name, middle_name, last_name) " +
+                    "values (?,?,?,?)";
+            
+            Connection conn = DriverManager.getConnection(_url, _props);
+            PreparedStatement insertStmt = conn.prepareStatement(query);
+            
+            for (Passenger p: booking.getPassengers()) {
+                insertStmt.setObject(1, booking.getBookingId());
+                insertStmt.setString(2, p.getFirstName());
+                insertStmt.setString(3, p.getMiddleName());
+                insertStmt.setString(4, p.getLastName());
+
+                insertStmt.executeUpdate();
+            }
+            
+            insertStmt.close();
+            conn.close();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
     
     private void savePhones(Customer customer) {
@@ -405,6 +961,110 @@ public class AirReserveConnection {
         }
         
         return customer;
+    }
+    
+    private Passenger buildPassenger(ResultSet rs) {
+        
+        Passenger passenger = new Passenger();
+        
+        try {
+            passenger.setFirstName(rs.getString("first_name"));
+            passenger.setMiddleName(rs.getString("middle_name"));
+            passenger.setLastName(rs.getString("last_name"));
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return passenger;
+    }
+    
+    private Booking buildBooking(ResultSet rs) {
+        
+        Booking booking = new Booking();
+        
+        try {
+            booking.setBookingId(UUID.fromString(rs.getString("booking_id")));
+            booking.setBookingDate(rs.getTimestamp("booking_date"));
+            booking.setCityCode(rs.getString("city_code"));
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return booking;
+    }
+    
+    private FlightInstance buildFlightInstance(ResultSet rs) {
+        
+        FlightInstance flight = new FlightInstance();
+        
+        try {
+            flight.setFlightInstanceId(UUID.fromString(rs.getString("flight_instance_id")));
+            flight.setAirlineCode(rs.getString("airline_code"));
+            flight.setFlightNumber(rs.getString("flight_number"));
+            flight.setArrivalDate(rs.getDate("arrival_date"));
+            flight.setArrivalHour(rs.getInt("arrival_hour"));
+            flight.setArrivalMinute(rs.getInt("arrival_minute"));
+            flight.setDepartureDate(rs.getDate("departure_date"));
+            flight.setDepartureHour(rs.getInt("departure_hour"));
+            flight.setDepartureMinute(rs.getInt("departure_minute"));
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return flight;
+    }
+    
+    private Flight buildFlight(ResultSet rs) {
+        
+        Flight flight = new Flight();
+        
+        try {
+            flight.setFlightNumber(rs.getString("flight_number"));
+            flight.setOriginCityCode(rs.getString("origin_city_code"));
+            flight.setDestCityCode(rs.getString("dest_city_code"));
+            flight.setLengthHours(rs.getInt("length_hours"));
+            flight.setLengthMinutes(rs.getInt("length_minutes"));
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return flight;
+    }
+    
+    private Airline buildAirline(ResultSet rs) {
+        
+        Airline airline = new Airline();
+        
+        try {
+            airline.setAirlineCode(rs.getString("airline_code"));
+            airline.setAirlineName(rs.getString("airline_name"));
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return airline;
+    }
+    
+    private City buildCity(ResultSet rs) {
+        
+        City city = new City();
+        
+        try {
+            city.setCityCode(rs.getString("city_code"));
+            city.setCity(rs.getString("city"));
+            city.setStateProvince(rs.getString("state_province"));
+            city.setCountry(rs.getString("country"));
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(AirReserveConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return city;
     }
     
     private Phone buildPhone(ResultSet rs) {

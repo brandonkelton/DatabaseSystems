@@ -25,6 +25,7 @@ public class Customer {
     private String _country;
     private List<Phone> _phones = new ArrayList<Phone>();
     private List<Email> _emails = new ArrayList<Email>();
+    private List<Booking> _bookings = new ArrayList<Booking>();
     
     public UUID getCustomerId() {
         return _customerId;
@@ -104,6 +105,14 @@ public class Customer {
     
     public void setEmails(List<Email> emails) {
         _emails = emails;
+    }
+    
+    public List<Booking> getBookings() {
+        return _bookings;
+    }
+    
+    public void setBookings(List<Booking> bookings) {
+        _bookings = bookings;
     }
     
     public static String[] getFieldNames() {

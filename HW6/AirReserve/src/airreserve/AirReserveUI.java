@@ -7,10 +7,19 @@ package airreserve;
 
 import airreserve.database.AirReserveConnection;
 import airreserve.helpers.StringHelpers;
+import airreserve.models.Airline;
+import airreserve.models.Booking;
+import airreserve.models.City;
 import airreserve.models.Customer;
 import airreserve.models.Email;
+import airreserve.models.Flight;
+import airreserve.models.FlightInstance;
+import airreserve.models.Passenger;
 import airreserve.models.Phone;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -18,9 +27,11 @@ import java.util.Set;
 import java.util.UUID;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -33,6 +44,7 @@ public class AirReserveUI extends javax.swing.JFrame {
         setupButtonsAndLabels();
         setEditableFields(false);
         configureListeners();
+        loadCities();
     }
     
     private void configureListeners() {
@@ -40,6 +52,22 @@ public class AirReserveUI extends javax.swing.JFrame {
             public void valueChanged(ListSelectionEvent event) {
                 int row = tableCustomerLookup.getSelectedRow();
                 loadCustomerData(row);
+            }
+        });
+        tableBookings.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+            public void valueChanged(ListSelectionEvent event) {
+                int row = tableBookings.getSelectedRow();
+                loadBooking(row);
+            }
+        });
+        comboBoxOriginCity.addActionListener (new ActionListener () {
+            public void actionPerformed(ActionEvent e) {
+                updateAvailableFlights();
+            }
+        });
+        comboBoxDestinationCity.addActionListener (new ActionListener () {
+            public void actionPerformed(ActionEvent e) {
+                updateAvailableFlights();
             }
         });
     }
@@ -63,6 +91,27 @@ public class AirReserveUI extends javax.swing.JFrame {
         buttonNewPhone.setEnabled(editable);
         tableEmail.setEnabled(editable);
         buttonNewEmail.setEnabled(editable);
+        tableBookings.setEnabled(editable);
+        tableFlights.setEnabled(editable);
+        tablePassengers.setEnabled(editable);
+        comboBoxOriginCity.setEnabled(editable);
+        comboBoxDestinationCity.setEnabled(editable);
+        buttonSaveBooking.setEnabled(editable);
+        buttonNewBooking.setEnabled(editable);
+        buttonAddPassenger.setEnabled(editable);
+        buttonRemovePassenger.setEnabled(editable);
+    }
+    
+    private void loadCities() {
+        
+        AirReserveConnection conn = new AirReserveConnection();
+        List<City> cities = conn.getCities();
+                
+        cities.forEach(c -> {
+            comboBoxBookingCity.addItem(c.getCity());
+            comboBoxOriginCity.addItem(c.getCity());
+            comboBoxDestinationCity.addItem(c.getCity());
+        });
     }
 
     /**
@@ -114,7 +163,6 @@ public class AirReserveUI extends javax.swing.JFrame {
         buttonNewBooking = new javax.swing.JButton();
         textBookingId = new javax.swing.JTextField();
         labelBookingId = new javax.swing.JLabel();
-        buttonEditBooking = new javax.swing.JButton();
         buttonSaveBooking = new javax.swing.JButton();
         comboBoxOriginCity = new javax.swing.JComboBox<>();
         labelOriginCity = new javax.swing.JLabel();
@@ -124,10 +172,12 @@ public class AirReserveUI extends javax.swing.JFrame {
         tableFlights = new javax.swing.JTable();
         jScrollPane5 = new javax.swing.JScrollPane();
         tablePassengers = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        buttonAddPassenger = new javax.swing.JButton();
+        buttonRemovePassenger = new javax.swing.JButton();
         buttonEditCustomer = new javax.swing.JButton();
         buttonClear = new javax.swing.JButton();
+        comboBoxBookingCity = new javax.swing.JComboBox<>();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -345,7 +395,7 @@ public class AirReserveUI extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(textStateProvince, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(textPostalCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(187, Short.MAX_VALUE))
+                .addContainerGap(176, Short.MAX_VALUE))
         );
 
         tabbedPaneMain.addTab("General", jPanel1);
@@ -370,6 +420,10 @@ public class AirReserveUI extends javax.swing.JFrame {
         tablePhone.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(tablePhone);
         tablePhone.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        if (tablePhone.getColumnModel().getColumnCount() > 0) {
+            tablePhone.getColumnModel().getColumn(0).setResizable(false);
+            tablePhone.getColumnModel().getColumn(3).setResizable(false);
+        }
 
         buttonNewPhone.setText("New");
         buttonNewPhone.addActionListener(new java.awt.event.ActionListener() {
@@ -397,7 +451,7 @@ public class AirReserveUI extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(buttonNewPhone)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 314, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -422,6 +476,10 @@ public class AirReserveUI extends javax.swing.JFrame {
         tableEmail.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(tableEmail);
         tableEmail.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        if (tableEmail.getColumnModel().getColumnCount() > 0) {
+            tableEmail.getColumnModel().getColumn(0).setResizable(false);
+            tableEmail.getColumnModel().getColumn(1).setResizable(false);
+        }
 
         buttonNewEmail.setText("New");
         buttonNewEmail.addActionListener(new java.awt.event.ActionListener() {
@@ -449,7 +507,7 @@ public class AirReserveUI extends javax.swing.JFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(buttonNewEmail)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 314, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -481,17 +539,30 @@ public class AirReserveUI extends javax.swing.JFrame {
         tableBookings.getTableHeader().setReorderingAllowed(false);
         jScrollPane3.setViewportView(tableBookings);
         tableBookings.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        if (tableBookings.getColumnModel().getColumnCount() > 0) {
+            tableBookings.getColumnModel().getColumn(0).setResizable(false);
+            tableBookings.getColumnModel().getColumn(1).setResizable(false);
+            tableBookings.getColumnModel().getColumn(2).setResizable(false);
+        }
 
         buttonNewBooking.setText("New");
+        buttonNewBooking.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonNewBookingActionPerformed(evt);
+            }
+        });
 
         textBookingId.setEnabled(false);
 
         labelBookingId.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         labelBookingId.setText("Booking ID:");
 
-        buttonEditBooking.setText("Edit");
-
         buttonSaveBooking.setText("Save");
+        buttonSaveBooking.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonSaveBookingActionPerformed(evt);
+            }
+        });
 
         labelOriginCity.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         labelOriginCity.setText("Origin City:");
@@ -504,14 +575,14 @@ public class AirReserveUI extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Airline", "Depart Date", "Depart Time", "Arrive Date", "Arrive Time"
+                "Airline", "Flight", "Depart", "Arrive"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, true, true
+                false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -525,6 +596,12 @@ public class AirReserveUI extends javax.swing.JFrame {
         tableFlights.getTableHeader().setReorderingAllowed(false);
         jScrollPane4.setViewportView(tableFlights);
         tableFlights.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        if (tableFlights.getColumnModel().getColumnCount() > 0) {
+            tableFlights.getColumnModel().getColumn(0).setResizable(false);
+            tableFlights.getColumnModel().getColumn(1).setResizable(false);
+            tableFlights.getColumnModel().getColumn(2).setResizable(false);
+            tableFlights.getColumnModel().getColumn(3).setResizable(false);
+        }
 
         tablePassengers.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -545,10 +622,25 @@ public class AirReserveUI extends javax.swing.JFrame {
         tablePassengers.getTableHeader().setReorderingAllowed(false);
         jScrollPane5.setViewportView(tablePassengers);
         tablePassengers.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        if (tablePassengers.getColumnModel().getColumnCount() > 0) {
+            tablePassengers.getColumnModel().getColumn(0).setResizable(false);
+            tablePassengers.getColumnModel().getColumn(1).setResizable(false);
+            tablePassengers.getColumnModel().getColumn(2).setResizable(false);
+        }
 
-        jButton1.setText("New Passenger");
+        buttonAddPassenger.setText("Add Passenger");
+        buttonAddPassenger.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonAddPassengerActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Delete Passenger");
+        buttonRemovePassenger.setText("Remove Passenger");
+        buttonRemovePassenger.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonRemovePassengerActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -562,7 +654,6 @@ public class AirReserveUI extends javax.swing.JFrame {
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(buttonNewBooking, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(buttonEditBooking, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(buttonSaveBooking, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -584,8 +675,8 @@ public class AirReserveUI extends javax.swing.JFrame {
                         .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(buttonRemovePassenger, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(buttonAddPassenger, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -593,7 +684,7 @@ public class AirReserveUI extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 314, Short.MAX_VALUE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(buttonNewBooking)
@@ -602,24 +693,23 @@ public class AirReserveUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(buttonEditBooking)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGap(30, 30, 30)
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(buttonSaveBooking)
                                     .addComponent(comboBoxDestinationCity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(labelDestinationCity)))
                             .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(comboBoxOriginCity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(labelOriginCity)))
+                                .addComponent(labelOriginCity)
+                                .addComponent(buttonSaveBooking)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jButton1)
+                                .addComponent(buttonAddPassenger)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton2)))))
+                                .addComponent(buttonRemovePassenger)))))
                 .addContainerGap())
         );
 
@@ -639,6 +729,8 @@ public class AirReserveUI extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setText("Booking City:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -650,7 +742,11 @@ public class AirReserveUI extends javax.swing.JFrame {
                     .addComponent(tabbedPaneMain, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(labelAirReserve, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(49, 49, 49)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(comboBoxBookingCity, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
                         .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(buttonSearch))
@@ -670,12 +766,13 @@ public class AirReserveUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(buttonSearch)
-                        .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(labelAirReserve, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(buttonSearch)
+                    .addComponent(textSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(comboBoxBookingCity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelAirReserve, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addGap(27, 27, 27)
                 .addComponent(scrollPaneCustomerLookup, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(36, 36, 36)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -710,6 +807,38 @@ public class AirReserveUI extends javax.swing.JFrame {
 //        clearCustomerData();
     }//GEN-LAST:event_buttonDeleteActionPerformed
 
+    private void updateAvailableFlights() {
+        
+        String originCity = comboBoxOriginCity.getSelectedItem() != null ? comboBoxOriginCity.getSelectedItem().toString() : "";
+        String destCity = comboBoxDestinationCity.getSelectedItem() != null ? comboBoxDestinationCity.getSelectedItem().toString() : "";
+        
+        if ("".equals(originCity) || "".equals(destCity)) return;
+        
+        AirReserveConnection conn = new AirReserveConnection();
+        List<FlightInstance> flights = conn.getFlightInstances(originCity, destCity);
+            
+        DefaultTableModel tableModel = 
+            (DefaultTableModel) tableFlights.getModel();
+        
+        //Reset table rows to empty
+        tableModel.setRowCount(0);
+        
+        flights.forEach((f) -> {
+            tableModel.addRow(
+                new Object[] 
+                {
+                    conn.getAirlineByAirlineCode(f.getAirlineCode()).getAirlineName(),
+                    f.getFlightNumber(),
+                    f.getDepartureDate() + " " + 
+                            (f.getDepartureHour() < 10 ? "0" : "") + f.getDepartureHour() + 
+                            ":" + (f.getDepartureMinute() < 10 ? "0" : "") + f.getDepartureMinute(),
+                    f.getArrivalDate() + " " + 
+                            (f.getArrivalHour() < 10 ? "0" : "") + f.getArrivalHour() + 
+                            ":" + (f.getArrivalMinute() < 10 ? "0" : "") + f.getArrivalMinute()
+                });
+            });
+    }
+    
     private Customer buildCustomerModel() {
         
         Customer customer = new Customer();
@@ -728,6 +857,56 @@ public class AirReserveUI extends javax.swing.JFrame {
         customer.setEmails(getCustomerEmails());
         
         return customer;
+    }
+    
+    private Booking buildBookingModel() {
+        
+        Booking booking = new Booking();
+                
+        AirReserveConnection conn = new AirReserveConnection();
+        City city = conn.getCityFromCityName(comboBoxBookingCity.getSelectedItem().toString());
+        
+        if (!StringHelpers.isNullOrEmpty(textBookingId.getText())) {
+            booking.setBookingId(UUID.fromString(textBookingId.getText()));
+        }
+        booking.setBookingDate(Timestamp.valueOf(LocalDateTime.now()));
+        booking.setCityCode(city.getCityCode());
+        booking.setFlightInstance(getSelectedFlightInstance());
+        booking.setPassengers(buildPassengerList());
+        
+        return booking;
+    }
+    
+    private FlightInstance getSelectedFlightInstance() {
+        
+        DefaultTableModel model = (DefaultTableModel) tableFlights.getModel();
+        int rowIndex = tableFlights.getSelectedRow();
+        
+        AirReserveConnection conn = new AirReserveConnection();
+        
+        Airline airline = conn.getAirlineByAirlineName(model.getValueAt(rowIndex, 0).toString());
+        String flightNumber = model.getValueAt(rowIndex, 1).toString();
+        
+        FlightInstance flight = conn.getFlightInstanceByAirlineCodeFlightNumber(airline.getAirlineCode(), flightNumber);
+        
+        return flight;
+    }
+    
+    private List<Passenger> buildPassengerList() {
+        
+        List<Passenger> passengers = new ArrayList<Passenger>();
+        
+        DefaultTableModel model = (DefaultTableModel) tablePassengers.getModel();
+        
+        for (int i=0;i<model.getRowCount();i++) {
+            Passenger passenger = new Passenger();
+            passenger.setFirstName(model.getValueAt(i, 0).toString());
+            passenger.setMiddleName(model.getValueAt(i, 1).toString());
+            passenger.setLastName(model.getValueAt(i, 2).toString());
+            passengers.add(passenger);
+        }
+        
+        return passengers;
     }
     
     private List<Phone> getCustomerPhones() {
@@ -767,20 +946,7 @@ public class AirReserveUI extends javax.swing.JFrame {
     }
     
     private void buttonSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSaveActionPerformed
-        
-        Customer customer = buildCustomerModel();
-        
-        AirReserveConnection conn = new AirReserveConnection();
-        
-        if (!StringHelpers.isNullOrEmpty(textCustomerId.getText())) {
-            conn.updateCustomer(customer);
-        }
-        else {
-            UUID customerId = conn.createCustomer(customer);
-            textCustomerId.setText(customerId.toString());
-        }
-        setEditableFields(false);
-        buttonSave.setEnabled(false);
+        saveCustomer(true);        
     }//GEN-LAST:event_buttonSaveActionPerformed
 
     private void textStreetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textStreetActionPerformed
@@ -830,8 +996,7 @@ public class AirReserveUI extends javax.swing.JFrame {
 
     private void buttonClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonClearActionPerformed
         clearCustomerData();
-        buttonSave.setEnabled(false);
-        
+        exitEditMode();
     }//GEN-LAST:event_buttonClearActionPerformed
 
     private void buttonNewPhoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonNewPhoneActionPerformed
@@ -843,7 +1008,34 @@ public class AirReserveUI extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) tableEmail.getModel();
         model.addRow(new Object[]{false,""});
     }//GEN-LAST:event_buttonNewEmailActionPerformed
-       
+
+    private void buttonAddPassengerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAddPassengerActionPerformed
+        DefaultTableModel model = (DefaultTableModel) tablePassengers.getModel();
+        model.addRow(new Object[]{"","",""});
+    }//GEN-LAST:event_buttonAddPassengerActionPerformed
+
+    private void buttonRemovePassengerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRemovePassengerActionPerformed
+        DefaultTableModel model = (DefaultTableModel) tablePassengers.getModel();
+        model.removeRow(tablePassengers.getSelectedRow());
+    }//GEN-LAST:event_buttonRemovePassengerActionPerformed
+
+    private void buttonNewBookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonNewBookingActionPerformed
+        
+        textBookingId.setText("");
+        comboBoxOriginCity.setSelectedItem(null);
+        comboBoxDestinationCity.setSelectedItem(null);
+        
+        DefaultTableModel flightModel = (DefaultTableModel) tableFlights.getModel();
+        flightModel.setRowCount(0);
+        
+        DefaultTableModel passengerModel = (DefaultTableModel) tablePassengers.getModel();
+        passengerModel.setRowCount(0);
+    }//GEN-LAST:event_buttonNewBookingActionPerformed
+
+    private void buttonSaveBookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSaveBookingActionPerformed
+        saveBooking();
+    }//GEN-LAST:event_buttonSaveBookingActionPerformed
+    
     private void enterEditMode() {
         setEditableFields(true);
         buttonSave.setEnabled(true);
@@ -891,11 +1083,6 @@ public class AirReserveUI extends javax.swing.JFrame {
         });
     }
     
-//    private boolean hasMatchingCustomerRecords() {
-//        DefaultTableModel tableModel = (DefaultTableModel) tableCustomerLookup.getModel();
-//        return tableModel.getRowCount() > 0;
-//    }
-    
     private void loadCustomerData(int rowIndex) {
         
         DefaultTableModel tableModel = (DefaultTableModel) tableCustomerLookup.getModel();
@@ -905,8 +1092,155 @@ public class AirReserveUI extends javax.swing.JFrame {
         Customer customer = conn.getCustomerById(customerId);
         customer.setPhones(conn.getCustomerPhonesById(customerId));
         customer.setEmails(conn.getCustomerEmailsById(customerId));
+        customer.setBookings(conn.getCustomerBookingsById(customerId));
         
         loadCustomerData(customer);
+    }
+    
+    private void loadBooking(int rowIndex) {
+        
+        DefaultTableModel tableModel = (DefaultTableModel) tableBookings.getModel();
+        UUID bookingId = (UUID)tableModel.getValueAt(rowIndex, 0);
+        
+        AirReserveConnection conn = new AirReserveConnection();
+        Booking booking = conn.getBookingById(bookingId);
+        booking.setFlightInstance(conn.getFlightInstanceByBookingId(bookingId));
+        booking.getFlightInstance()
+                .setFlight(
+                        conn.getFlightByFlightNumber(
+                                booking.getFlightInstance().getFlightNumber()));
+        booking.setPassengers(conn.getPassengersByBookingId(bookingId));
+        
+        loadBooking(booking);
+    }
+    
+    private void loadBooking(Booking booking) {
+        
+        textBookingId.setText(booking.getBookingDate().toString());
+        
+        AirReserveConnection conn = new AirReserveConnection();
+        
+        City originCity = conn.getCityFromCityCode(booking.getFlightInstance().getFlight().getOriginCityCode());
+        City destCity = conn.getCityFromCityCode(booking.getFlightInstance().getFlight().getDestCityCody());
+                
+        comboBoxOriginCity.setSelectedItem(originCity.getCity());
+        comboBoxDestinationCity.setSelectedItem(destCity.getCity());
+        
+        updateAvailableFlights();
+        
+        DefaultTableModel flightTableModel = (DefaultTableModel) tableFlights.getModel();
+        Airline airline = conn.getAirlineByAirlineCode(booking.getFlightInstance().getAirlineCode());
+        
+        int rowIndex = getRowByValues(
+                flightTableModel, 
+                0, 
+                airline.getAirlineName(), 
+                1, 
+                booking.getFlightInstance().getFlightNumber());
+                
+        tableFlights.setRowSelectionInterval(rowIndex, rowIndex);
+        
+        DefaultTableModel passengerTableModel = 
+                (DefaultTableModel) tablePassengers.getModel();
+        
+        //Reset table rows to empty
+        passengerTableModel.setRowCount(0);
+        
+        booking.getPassengers().forEach((p) -> {
+            passengerTableModel.addRow(
+                    new Object[] 
+                    {
+                        p.getFirstName(),
+                        p.getMiddleName(),
+                        p.getLastName()
+                    });
+        });
+    }
+    
+    private int getRowByValues(TableModel model, int colIndex1, Object value1, int colIndex2, Object value2) {
+        
+        for (int i = model.getRowCount() - 1; i >= 0; --i) {
+            if (model.getValueAt(i, colIndex1).equals(value1) &&
+                    model.getValueAt(i, colIndex2).equals(value2)) {
+                    return i;
+                }
+        }
+        
+        return 0;
+    }
+    
+    private void saveCustomer(boolean exitEditMode) {
+        
+        Customer customer = buildCustomerModel();
+        
+        AirReserveConnection conn = new AirReserveConnection();
+        
+        if (!StringHelpers.isNullOrEmpty(textCustomerId.getText())) {
+            conn.updateCustomer(customer);
+        }
+        else {
+            UUID customerId = conn.createCustomer(customer);
+            textCustomerId.setText(customerId.toString());
+        }
+        
+        if (exitEditMode) {
+            setEditableFields(false);
+            buttonSave.setEnabled(false);
+        }
+    }
+ 
+    private void saveBooking() {
+        
+        saveCustomer(false);
+        
+        UUID bookingId;
+        Booking booking = buildBookingModel();
+        
+        AirReserveConnection conn = new AirReserveConnection();
+        
+        if (!StringHelpers.isNullOrEmpty(textBookingId.getText())) {
+            bookingId = UUID.fromString(textBookingId.getText());
+            conn.updateBooking(booking);
+        }
+        else {
+            bookingId = conn.createBooking(booking, UUID.fromString(textCustomerId.getText()));
+            textBookingId.setText(bookingId.toString());
+        }
+        
+        updateBookingList();
+        selectBooking(bookingId);
+    }
+    
+    private void selectBooking(UUID bookingId) {
+        
+        DefaultTableModel tableModel = 
+                (DefaultTableModel) tableBookings.getModel();
+        
+        for (int i=0;i<tableModel.getRowCount();i++) {
+            if (tableModel.getValueAt(i, 0).toString().equals(bookingId.toString())) {
+                tableBookings.setRowSelectionInterval(i, i);
+            }
+        }
+    }
+    
+    private void updateBookingList() {
+        
+        AirReserveConnection conn = new AirReserveConnection();
+        List<Booking> bookings = conn.getBookingsByCustomerId(UUID.fromString(textCustomerId.getText()));
+        
+        DefaultTableModel tableModel = (DefaultTableModel) tableBookings.getModel();
+        
+        tableModel.setRowCount(0);
+        
+        bookings.forEach((b) -> {
+            tableModel.addRow(
+                    new Object[] 
+                    {
+                        b.getBookingId(),
+                        b.getCityCode(),
+                        b.getBookingDate()
+                    });
+        });
     }
     
     private void loadCustomerData(Customer customer) {
@@ -952,6 +1286,22 @@ public class AirReserveUI extends javax.swing.JFrame {
                     {
                         e.getPreferred(),
                         e.getEmail()
+                    });
+        });
+        
+        DefaultTableModel bookingTableModel = 
+                (DefaultTableModel) tableBookings.getModel();
+        
+        //Reset table rows to empty
+        bookingTableModel.setRowCount(0);
+        
+        customer.getBookings().forEach(b -> {
+            bookingTableModel.addRow(
+                    new Object[] 
+                    {
+                        b.getBookingId(),
+                        b.getCityCode(),
+                        b.getBookingDate()
                     });
         });
         
@@ -1012,21 +1362,22 @@ public class AirReserveUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton buttonAddPassenger;
     private javax.swing.JButton buttonClear;
     private javax.swing.JButton buttonDelete;
-    private javax.swing.JButton buttonEditBooking;
     private javax.swing.JButton buttonEditCustomer;
     private javax.swing.JButton buttonNewBooking;
     private javax.swing.JButton buttonNewCustomer;
     private javax.swing.JButton buttonNewEmail;
     private javax.swing.JButton buttonNewPhone;
+    private javax.swing.JButton buttonRemovePassenger;
     private javax.swing.JButton buttonSave;
     private javax.swing.JButton buttonSaveBooking;
     private javax.swing.JButton buttonSearch;
+    private javax.swing.JComboBox<String> comboBoxBookingCity;
     private javax.swing.JComboBox<String> comboBoxDestinationCity;
     private javax.swing.JComboBox<String> comboBoxOriginCity;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
