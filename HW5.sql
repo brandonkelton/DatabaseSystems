@@ -88,8 +88,8 @@ create table AirReserve.booking_flight_instance
 create table AirReserve.booking_passenger
 (
 	booking_id uuid not null references AirReserve.booking (booking_id),
-    first_name varchar(50),
+    first_name varchar(50) NOT NULL,
     middle_name varchar(50),
-    last_name varchar(50),
+    last_name varchar(50) NOT NULL,
     primary key (booking_id, first_name, middle_name, last_name)
 );
