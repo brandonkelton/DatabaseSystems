@@ -1,0 +1,7 @@
+Dec 03, 2017 8:38:20 PM airreserve.AirReserveUI configureLog
+INFO: AirReserveUI Initialized.
+Dec 03, 2017 8:39:14 PM airreserve.AirReserveUI LogBooking
+INFO: Lee Pino booked UA flight number 1121 for 2017-12-19 at 12:32.
+The passengers are:
+Brandon Cody Kelton
+Booking was created on 2017-12-03 20:39:14.396 in the city of ORD.
