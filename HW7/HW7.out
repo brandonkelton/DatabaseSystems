@@ -1,0 +1,15 @@
+C:\Users\brand>mongoimport -d CSDB -c airline D:\CSDB\HW7\HW7_Airline.json --jsonArray
+2017-12-07T20:24:19.599-0700    connected to: localhost
+2017-12-07T20:24:19.639-0700    imported 3 documents
+
+C:\Users\brand>mongoimport -d CSDB -c city D:\CSDB\HW7\HW7_City.json --jsonArray
+2017-12-07T20:24:42.510-0700    connected to: localhost
+2017-12-07T20:24:42.546-0700    imported 8 documents
+
+C:\Users\brand>mongoimport -d CSDB -c flight D:\CSDB\HW7\HW7_Flight.json --jsonArray
+2017-12-07T20:24:55.764-0700    connected to: localhost
+2017-12-07T20:24:55.812-0700    imported 27 documents
+
+C:\Users\brand>mongoimport -d CSDB -c flight_instance D:\CSDB\HW7\HW7_FlightInstance.json --jsonArray
+2017-12-07T20:25:08.226-0700    connected to: localhost
+2017-12-07T20:25:08.267-0700    imported 28 documents

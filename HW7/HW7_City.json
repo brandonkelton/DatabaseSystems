@@ -1,0 +1,10 @@
+[
+    {"state_province":"Ontario","city":"Toronto","city_code":"TOR","country":"Canada"},
+    {"state_province":"Quebec","city":"Montreal","city_code":"MON","country":"Canada"},
+    {"state_province":"New York","city":"New York","city_code":"JFK","country":"USA"},
+    {"state_province":"Illinois","city":"Chicago","city_code":"ORD","country":"USA"},
+    {"state_province":"England","city":"London","city_code":"LCY","country":"United Kingdom"},
+    {"state_province":"England","city":"Edinburgh","city_code":"EDI","country":"United Kingdom"},
+    {"state_province":"Île-de-France","city":"Paris","city_code":"PAR","country":"France"},
+    {"state_province":"Cote D'Azur","city":"Nice","city_code":"NCE","country":"France"}
+]
